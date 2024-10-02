@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from fastapi.params import Depends
 
-from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta
-from app.api.models.SQLtables import User
+from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta, GastoDTOPeticion, GastoDTORepuesta
+from app.api.models.SQLtables import User, Expenses
 from app.database.configuration import sessionLocal, engine
 
 rutas = APIRouter()
@@ -12,9 +12,71 @@ rutas = APIRouter()
 def conectarConBd():
     try: 
         baseDatos = sessionLocal()
-        yield baseDatos
+        yield baseDatos #Activar la base de datos
     except Exception as error:
         baseDatos.rollback()
         raise error
     finally:
         baseDatos.close()
+
+#CONSTRUYENDO NUESTROS SERVICIOS 
+
+#Cada servicio (operación o transacción en BD) debe programarse como una funcion 
+@rutas.post("/user", response_model=User, summary="Registrar un usuario en la base de datos")
+def guardarUsuario(datosUsuario: UsuarioDTOPeticion, database: Session = Depends(conectarConBd)):
+    try:
+        user = User(
+            name = datosUsuario.name,
+            dateOfBirth = datosUsuario.dateOfBirth,
+            location = datosUsuario.location,
+            savingsTarget = datosUsuario.savingsTarget
+        )
+        #Ordenandole a la BD
+        database.add(user)
+        database.commit()
+        database.refresh(user)
+        return user
+
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
+    
+#En este no se tiene que llevar datos porque ya tenemos la conexión y son datos que ya existen
+@rutas.get("/user", response_model=List[UsuarioDTORespuesta], summary="Buscar todos los uauarios en BD")
+def buscarUsuarios(database: Session = Depends(conectarConBd)):
+    try:
+        user = database.query(User).all()
+        return user
+    
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"No se puede buscar los usuarios {error}")
+    
+@rutas.post("/expenses", response_model=Expenses, summary="Registrar los gastos en la base de datos")
+def guardarUsuario(datosGastos: GastoDTOPeticion, database: Session = Depends(conectarConBd)):
+    try:
+        expenses = Expenses(
+            description = datosGastos.description,
+            category = datosGastos.category,
+            amount = datosGastos.amount,
+            date = datosGastos.date
+        )
+        #Ordenandole a la BD
+        database.add(expenses)
+        database.commit()
+        database.refresh(expenses)
+        return expenses
+
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
+    
+@rutas.get("/expenses", response_model=List[GastoDTORepuesta], summary="Buscar todos los gastos en BD")
+def buscarGastos(database: Session = Depends(conectarConBd)):
+    try:
+        expenses = database.query(Expenses).all()
+        return expenses
+    
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"No se puede buscar los gastos {error}")
