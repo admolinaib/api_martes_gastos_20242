@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List
 from fastapi.params import Depends
 
-from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta, GastoDTOPeticion, GastoDTORepuesta
-from app.api.models.SQLtables import User, Expenses
+from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta, GastoDTOPeticion, GastoDTORepuesta, CategoriaDTOPeticion, CategoriaDTORepuesta, ingresoDTOPeticion, ingresoDTORepuesta
+from app.api.models.SQLtables import User, Expenses, Category, Income
 from app.database.configuration import sessionLocal, engine
 
 rutas = APIRouter()
@@ -53,7 +53,7 @@ def buscarUsuarios(database: Session = Depends(conectarConBd)):
         raise HTTPException(status_code=400, detail=f"No se puede buscar los usuarios {error}")
     
 @rutas.post("/expenses", response_model=Expenses, summary="Registrar los gastos en la base de datos")
-def guardarUsuario(datosGastos: GastoDTOPeticion, database: Session = Depends(conectarConBd)):
+def guardarGastos(datosGastos: GastoDTOPeticion, database: Session = Depends(conectarConBd)):
     try:
         expenses = Expenses(
             description = datosGastos.description,
@@ -80,3 +80,59 @@ def buscarGastos(database: Session = Depends(conectarConBd)):
     except Exception as error:
         database.rollback()
         raise HTTPException(status_code=400, detail=f"No se puede buscar los gastos {error}")
+    
+@rutas.post("/category", response_model=Category, summary="Categorizar y ampliar la información de los gastos en la base de datos")
+def guardarCategorias(datosCateroria: CategoriaDTOPeticion, database: Session = Depends(conectarConBd)):
+    try:
+        category = Category(
+            name = datosCateroria.name,
+            description = datosCateroria.description,
+            categoryPicture = datosCateroria.categoryPicture,
+        )
+        #Ordenandole a la BD
+        database.add(category)
+        database.commit()
+        database.refresh(category)
+        return category
+
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
+    
+@rutas.get("/category", response_model=List[CategoriaDTORepuesta], summary="Buscar las categorías e información relacionada en BD")
+def buscarCategorias(database: Session = Depends(conectarConBd)):
+    try:
+        category = database.query(Category).all()
+        return category
+    
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"No se puede buscar las categorías {error}")
+    
+@rutas.post("/income", response_model=Income, summary="Registrar los ingresos en la base de datos")
+def guardarIngreso(datosIngreso: ingresoDTOPeticion, database: Session = Depends(conectarConBd)):
+    try:
+        income = Income(
+            amount = datosIngreso.amount,
+            description = datosIngreso.description,
+            date = datosIngreso.date,
+        )
+        #Ordenandole a la BD
+        database.add(income)
+        database.commit()
+        database.refresh(income)
+        return income
+
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
+    
+@rutas.get("/income", response_model=List[ingresoDTORepuesta], summary="Buscar todos los ingresos en BD")
+def buscarIngreso(database: Session = Depends(conectarConBd)):
+    try:
+        income = database.query(Income).all()
+        return income
+    
+    except Exception as error:
+        database.rollback()
+        raise HTTPException(status_code=400, detail=f"No se puede buscar los ingresos {error}")
