@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from fastapi.params import Depends
 
-from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta, GastoDTOPeticion, GastoDTORepuesta, CategoriaDTOPeticion, CategoriaDTORepuesta, ingresoDTOPeticion, ingresoDTORepuesta
+from app.api.DTO.dtos import UsuarioDTOPeticion, UsuarioDTORespuesta, GastoDTOPeticion, GastoDTORespuesta, CategoriaDTOPeticion, CategoriaDTORespuesta, ingresoDTOPeticion, ingresoDTORespuesta
 from app.api.models.SQLtables import User, Expenses, Category, Income
 from app.database.configuration import sessionLocal, engine
 
@@ -71,7 +71,7 @@ def guardarGastos(datosGastos: GastoDTOPeticion, database: Session = Depends(con
         database.rollback()
         raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
     
-@rutas.get("/expenses", response_model=List[GastoDTORepuesta], summary="Buscar todos los gastos en BD")
+@rutas.get("/expenses", response_model=List[GastoDTORespuesta], summary="Buscar todos los gastos en BD")
 def buscarGastos(database: Session = Depends(conectarConBd)):
     try:
         expenses = database.query(Expenses).all()
@@ -99,7 +99,7 @@ def guardarCategorias(datosCateroria: CategoriaDTOPeticion, database: Session = 
         database.rollback()
         raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
     
-@rutas.get("/category", response_model=List[CategoriaDTORepuesta], summary="Buscar las categorías e información relacionada en BD")
+@rutas.get("/category", response_model=List[CategoriaDTORespuesta], summary="Buscar las categorías e información relacionada en BD")
 def buscarCategorias(database: Session = Depends(conectarConBd)):
     try:
         category = database.query(Category).all()
@@ -127,7 +127,7 @@ def guardarIngreso(datosIngreso: ingresoDTOPeticion, database: Session = Depends
         database.rollback()
         raise HTTPException(status_code=400, detail=f"Tenemos un problema {error}")
     
-@rutas.get("/income", response_model=List[ingresoDTORepuesta], summary="Buscar todos los ingresos en BD")
+@rutas.get("/income", response_model=List[ingresoDTORespuesta], summary="Buscar todos los ingresos en BD")
 def buscarIngreso(database: Session = Depends(conectarConBd)):
     try:
         income = database.query(Income).all()

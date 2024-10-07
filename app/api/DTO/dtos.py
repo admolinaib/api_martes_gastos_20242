@@ -24,7 +24,7 @@ class GastoDTOPeticion(BaseModel):
     date = date
     orm_mode=True
 
-class GastoDTORepuesta(BaseModel):
+class GastoDTORespuesta(BaseModel):
     description =str
     category = str
     amount = float
@@ -37,7 +37,7 @@ class CategoriaDTOPeticion(BaseModel):
     categoryPicture = str
     orm_mode=True
 
-class CategoriaDTORepuesta(BaseModel):
+class CategoriaDTORespuesta(BaseModel):
     name = str
     description = str
     categoryPicture = str
@@ -49,7 +49,7 @@ class ingresoDTOPeticion(BaseModel):
     date = date
     orm_mode=True
 
-class ingresoDTORepuesta(BaseModel):
+class ingresoDTORespuesta(BaseModel):
     amount = float
     description = str
     date = date
