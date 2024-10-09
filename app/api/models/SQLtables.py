@@ -25,12 +25,14 @@ class Expenses(Base):
     date = Column(Date)
 
 class Category(Base):
+    __tablename__ = 'category'
     id = Column(Integer, primary_key = True, autoincrement = True)
     name = Column(String(50))
     description = Column(String(150))
     categoryPicture = Column(String(200))
 
 class Income(Base):
+    __tablename__ = 'income'
     id = Column(Integer, primary_key = True, autoincrement = True)
     amount = Column(Float)
     description = Column(String(150))

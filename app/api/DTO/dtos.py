@@ -18,39 +18,45 @@ class UsuarioDTORespuesta(BaseModel):
         orm_mode=True
 
 class GastoDTOPeticion(BaseModel):
-    description =str
-    category = str
-    amount = float
-    date = date
-    orm_mode=True
+    description:str
+    category: str
+    amount: float
+    date: date
+    class Config:
+        orm_mode=True
 
 class GastoDTORespuesta(BaseModel):
-    description =str
-    category = str
-    amount = float
-    date = date
-    orm_mode=True
+    description: str
+    category: str
+    amount: float
+    date: date
+    class Config:
+        orm_mode=True
 
 class CategoriaDTOPeticion(BaseModel):
-    name = str
-    description = str
-    categoryPicture = str
-    orm_mode=True
+    name: str
+    description: str
+    categoryPicture: str
+    class Config:
+        orm_mode=True
 
 class CategoriaDTORespuesta(BaseModel):
-    name = str
-    description = str
-    categoryPicture = str
-    orm_mode=True
+    name: str
+    description: str
+    categoryPicture: str
+    class Config:
+        orm_mode=True
 
 class ingresoDTOPeticion(BaseModel):
-    amount = float
-    description = str
-    date = date
-    orm_mode=True
+    amount: float
+    description: str
+    date: date
+    class Config:
+        orm_mode=True
 
 class ingresoDTORespuesta(BaseModel):
-    amount = float
-    description = str
-    date = date
-    orm_mode=True
+    amount: float
+    description: str
+    date: date
+    class Config:
+        orm_mode=True

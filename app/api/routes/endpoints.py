@@ -22,7 +22,7 @@ def conectarConBd():
 #CONSTRUYENDO NUESTROS SERVICIOS 
 
 #Cada servicio (operación o transacción en BD) debe programarse como una funcion 
-@rutas.post("/user", response_model=User, summary="Registrar un usuario en la base de datos")
+@rutas.post("/user", response_model=UsuarioDTORespuesta, summary="Registrar un usuario en la base de datos")
 def guardarUsuario(datosUsuario: UsuarioDTOPeticion, database: Session = Depends(conectarConBd)):
     try:
         user = User(
@@ -52,7 +52,7 @@ def buscarUsuarios(database: Session = Depends(conectarConBd)):
         database.rollback()
         raise HTTPException(status_code=400, detail=f"No se puede buscar los usuarios {error}")
     
-@rutas.post("/expenses", response_model=Expenses, summary="Registrar los gastos en la base de datos")
+@rutas.post("/expenses", response_model=GastoDTORespuesta, summary="Registrar los gastos en la base de datos")
 def guardarGastos(datosGastos: GastoDTOPeticion, database: Session = Depends(conectarConBd)):
     try:
         expenses = Expenses(
@@ -81,7 +81,7 @@ def buscarGastos(database: Session = Depends(conectarConBd)):
         database.rollback()
         raise HTTPException(status_code=400, detail=f"No se puede buscar los gastos {error}")
     
-@rutas.post("/category", response_model=Category, summary="Categorizar y ampliar la información de los gastos en la base de datos")
+@rutas.post("/category", response_model=CategoriaDTORespuesta, summary="Categorizar y ampliar la información de los gastos en la base de datos")
 def guardarCategorias(datosCateroria: CategoriaDTOPeticion, database: Session = Depends(conectarConBd)):
     try:
         category = Category(
@@ -109,7 +109,7 @@ def buscarCategorias(database: Session = Depends(conectarConBd)):
         database.rollback()
         raise HTTPException(status_code=400, detail=f"No se puede buscar las categorías {error}")
     
-@rutas.post("/income", response_model=Income, summary="Registrar los ingresos en la base de datos")
+@rutas.post("/income", response_model=ingresoDTORespuesta, summary="Registrar los ingresos en la base de datos")
 def guardarIngreso(datosIngreso: ingresoDTOPeticion, database: Session = Depends(conectarConBd)):
     try:
         income = Income(

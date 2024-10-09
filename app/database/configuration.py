@@ -4,7 +4,7 @@ from sqlalchemy.engine import Engine
 
 #datos para la conexion a BD
 
-dataBaseName = "gestordb"
+dataBaseName = "gestorbd"
 userName = "root"
 userPassword = ""
 connectionPort = 3306
